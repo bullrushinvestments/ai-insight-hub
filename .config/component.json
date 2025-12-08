@@ -1,0 +1,183 @@
+import type { BuildCommand, EnvVariables, HeaderRule, SecurityHeaders } from './types'; // Assuming custom types are defined in a separate file
+
+interface RedirectRules {
+    source: string;
+    has: {
+        status: number;
+        headers?: Record<string, string>;
+    };
+}
+
+interface CachingStrategy {
+    matchPattern: string;
+    matchOptions?: { ignoreQueryStrings: boolean };
+    modifier: 'no-store' | 'public' | 'private';
+}
+
+interface FrameworkSettings {
+    framework: 'nextjs';
+    settings: {
+        basePath?: string;
+        redirects?: RedirectRules[];
+        headers?: SecurityHeaders[];
+        rewrites?: Array<{ source: string; destination: string }>;
+        images?: { disableStaticImages?: boolean };
+        experimental?: Record<string, any>;
+    };
+}
+
+interface DeployConfig {
+    build: BuildCommand;
+    env: EnvVariables;
+    headers: HeaderRule[];
+    redirects: RedirectRules[];
+    cachingStrategies: CachingStrategy[];
+    frameworkSettings: FrameworkSettings;
+}
+
+const deployConfig: DeployConfig = {
+    build: {
+        command: 'npm run build',
+        output: '.next'
+    },
+    env: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY
+    },
+    headers: [
+        { source: '/(.*)', headers: [{ key: 'X-Frame-Options', value: 'DENY' }] }
+    ],
+    redirects: [
+        {
+            source: '/old-url',
+            has: { status: 301, headers: { location: '/new-url' } }
+        }
+    ],
+    cachingStrategies: [
+        {
+            matchPattern: '**/*.js',
+            modifier: 'no-store'
+        },
+        {
+            matchPattern: '**/*.css',
+            modifier: 'public'
+        }
+    ],
+    frameworkSettings: {
+        framework: 'nextjs',
+        settings: {
+            basePath: '/ecommerce',
+            redirects: [
+                { source: '/old-url', has: { status: 301, headers: { location: '/new-url' } } },
+                // Additional redirects can be added here
+            ],
+            headers: [
+                { source: '/*', headers: [{ key: 'X-Frame-Options', value: 'DENY' }] }
+            ],
+            rewrites: [
+                { source: '/api-proxy/:path*', destination: 'http://localhost:3001/api/:path*' }
+            ],
+            images: {
+                disableStaticImages: false
+            },
+            experimental: {
+                appDir: true,
+                serverComponents: true
+            }
+        }
+    }
+};
+
+export default deployConfig;
+
+import type { BuildCommand, EnvVariables, HeaderRule, SecurityHeaders } from './types'; // Assuming custom types are defined in a separate file
+
+interface RedirectRules {
+    source: string;
+    has: {
+        status: number;
+        headers?: Record<string, string>;
+    };
+}
+
+interface CachingStrategy {
+    matchPattern: string;
+    matchOptions?: { ignoreQueryStrings: boolean };
+    modifier: 'no-store' | 'public' | 'private';
+}
+
+interface FrameworkSettings {
+    framework: 'nextjs';
+    settings: {
+        basePath?: string;
+        redirects?: RedirectRules[];
+        headers?: SecurityHeaders[];
+        rewrites?: Array<{ source: string; destination: string }>;
+        images?: { disableStaticImages?: boolean };
+        experimental?: Record<string, any>;
+    };
+}
+
+interface DeployConfig {
+    build: BuildCommand;
+    env: EnvVariables;
+    headers: HeaderRule[];
+    redirects: RedirectRules[];
+    cachingStrategies: CachingStrategy[];
+    frameworkSettings: FrameworkSettings;
+}
+
+const deployConfig: DeployConfig = {
+    build: {
+        command: 'npm run build',
+        output: '.next'
+    },
+    env: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY
+    },
+    headers: [
+        { source: '/(.*)', headers: [{ key: 'X-Frame-Options', value: 'DENY' }] }
+    ],
+    redirects: [
+        {
+            source: '/old-url',
+            has: { status: 301, headers: { location: '/new-url' } }
+        }
+    ],
+    cachingStrategies: [
+        {
+            matchPattern: '**/*.js',
+            modifier: 'no-store'
+        },
+        {
+            matchPattern: '**/*.css',
+            modifier: 'public'
+        }
+    ],
+    frameworkSettings: {
+        framework: 'nextjs',
+        settings: {
+            basePath: '/ecommerce',
+            redirects: [
+                { source: '/old-url', has: { status: 301, headers: { location: '/new-url' } } },
+                // Additional redirects can be added here
+            ],
+            headers: [
+                { source: '/*', headers: [{ key: 'X-Frame-Options', value: 'DENY' }] }
+            ],
+            rewrites: [
+                { source: '/api-proxy/:path*', destination: 'http://localhost:3001/api/:path*' }
+            ],
+            images: {
+                disableStaticImages: false
+            },
+            experimental: {
+                appDir: true,
+                serverComponents: true
+            }
+        }
+    }
+};
+
+export default deployConfig;
